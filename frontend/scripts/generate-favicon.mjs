@@ -1,4 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+import fs from 'node:fs';
+import path from 'node:path';
+
+const outputPath = path.resolve('public/favicon.svg');
+
+const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="12" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
@@ -26,4 +31,9 @@
   </g>
 
   <text x="32" y="50" text-anchor="middle" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="700" letter-spacing="0.8">RAKSHA</text>
-</svg>
+</svg>`;
+
+fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+fs.writeFileSync(outputPath, svg, 'utf8');
+
+console.log(`Updated favicon at ${outputPath}`);
