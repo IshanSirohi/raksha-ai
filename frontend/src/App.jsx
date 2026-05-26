@@ -1,0 +1,21 @@
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
+import ReportIssue from './pages/ReportIssue';
+import RiskAlert from './pages/RiskAlert';
+import SOSPage from './pages/SOSPage';
+import LegalInfo from './pages/LegalInfo';
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/report-issue" element={<ReportIssue />} />
+      <Route path="/risk-alert" element={<RiskAlert />} />
+      <Route path="/sos" element={<SOSPage />} />
+      <Route path="/legal-info" element={<LegalInfo />} />
+      <Route path="*" element={<Home />} />
+    </Routes>
+  );
+}
