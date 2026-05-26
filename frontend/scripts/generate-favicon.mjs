@@ -35,12 +35,14 @@ const defaultSvg = `<?xml version="1.0" encoding="UTF-8"?>
 
 function printUsage() {
   console.log(`Usage:
-  node scripts/generate-favicon.mjs [--input path/to/icon.svg]
+  node scripts/generate-favicon.mjs [--input path/to/icon.svg] [--output path/to/favicon.svg]
 
 Examples:
   node scripts/generate-favicon.mjs
   node scripts/generate-favicon.mjs --input ../my-favicon.svg
-  node scripts/generate-favicon.mjs --input=../my-favicon.svg`);
+  node scripts/generate-favicon.mjs --input=../my-favicon.svg
+  node scripts/generate-favicon.mjs --output ../dist/favicon.svg
+  node scripts/generate-favicon.mjs --input ../my-favicon.svg --output ../dist/favicon.svg`);
 }
 
 const args = process.argv.slice(2);
@@ -51,6 +53,7 @@ if (args.includes('--help') || args.includes('-h')) {
 }
 
 let customSvgPath = null;
+let customOutputPath = null;
 
 for (let i = 0; i < args.length; i += 1) {
   const arg = args[i];
@@ -66,13 +69,24 @@ for (let i = 0; i < args.length; i += 1) {
     continue;
   }
 
+  if (arg === '--output') {
+    customOutputPath = args[i + 1];
+    i += 1;
+    continue;
+  }
+
+  if (arg.startsWith('--output=')) {
+    customOutputPath = arg.slice('--output='.length);
+    continue;
+  }
+
   if (arg.startsWith('--')) {
     console.error(`Unknown option: ${arg}`);
     printUsage();
     process.exit(1);
   }
 
-  if (customSvgPath) {
+  if (customSvgPath || customOutputPath) {
     console.error(`Unexpected extra argument: ${arg}`);
     printUsage();
     process.exit(1);
@@ -85,14 +99,19 @@ if (customSvgPath === undefined || customSvgPath === null) {
   customSvgPath = null;
 }
 
+if (customOutputPath === undefined || customOutputPath === null) {
+  customOutputPath = null;
+}
+
 if (customSvgPath && !fs.existsSync(path.resolve(customSvgPath))) {
   console.error(`Input SVG not found: ${customSvgPath}`);
   process.exit(1);
 }
 
+const targetOutputPath = path.resolve(customOutputPath || 'public/favicon.svg');
 const sourceSvg = customSvgPath ? fs.readFileSync(path.resolve(customSvgPath), 'utf8') : defaultSvg;
 
-fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-fs.writeFileSync(outputPath, sourceSvg, 'utf8');
+fs.mkdirSync(path.dirname(targetOutputPath), { recursive: true });
+fs.writeFileSync(targetOutputPath, sourceSvg, 'utf8');
 
-console.log(`Updated favicon at ${outputPath}${customSvgPath ? ` from ${customSvgPath}` : ''}`);
+console.log(`Updated favicon at ${targetOutputPath}${customSvgPath ? ` from ${customSvgPath}` : ''}`);
