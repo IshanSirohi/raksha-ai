@@ -1,17 +1,21 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ImageUploader from "../components/RoadIssue/ImageUploader";
 import DetectionResult from "../components/RoadIssue/DetectionResult";
 
-/* ─────────────────────────────────────────────────────────────
-   ReportIssue.jsx — AI-powered road issue reporting page
-   ───────────────────────────────────────────────────────────── */
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "../components/LanguageSelector";
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   ReportIssue.jsx â€” AI-powered road issue reporting page
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function PageShell({ title, subtitle, children, navigate, activeNav }) {
+  const { t } = useTranslation();
   const links = [
-    { key:"home",label:"Home",path:"/" },{ key:"dashboard",label:"Dashboard",path:"/dashboard" },
-    { key:"sos",label:"SOS",path:"/sos" },{ key:"report-issue",label:"Report Issue",path:"/report-issue" },
-    { key:"risk-alert",label:"Risk Alerts",path:"/risk-alert" },{ key:"legal-info",label:"Legal Info",path:"/legal-info" },
+    { key:"home",labelKey:"navigation.home",path:"/" },{ key:"dashboard",labelKey:"navigation.dashboard",path:"/dashboard" },
+    { key:"sos",labelKey:"navigation.sos",path:"/sos" },{ key:"report-issue",labelKey:"navigation.reportIssue",path:"/report-issue" },
+    { key:"risk-alert",labelKey:"navigation.riskAlertPlural",path:"/risk-alert" },{ key:"legal-info",labelKey:"navigation.legal",path:"/legal-info" },
   ];
   return (
     <div style={{ minHeight:"100vh", background:"#060810", color:"#e2e8f0", fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column" }}>
@@ -22,9 +26,10 @@ function PageShell({ title, subtitle, children, navigate, activeNav }) {
             <span style={{ fontFamily:"'Bebas Neue',cursive",fontSize:15,letterSpacing:2.5,color:"#f1f5f9" }}>RAKSHA AI</span>
           </div>
           <div style={{ display:"flex",gap:2,borderLeft:"1px solid rgba(255,255,255,0.06)",paddingLeft:16 }}>
-            {links.map(l => <button key={l.key} onClick={()=>navigate(l.path)} style={{ background:activeNav===l.key?"rgba(220,38,38,0.12)":"none",border:activeNav===l.key?"1px solid rgba(220,38,38,0.25)":"1px solid transparent",borderRadius:6,cursor:"pointer",padding:"4px 11px",fontSize:11,fontWeight:500,color:activeNav===l.key?"#f87171":"rgba(255,255,255,0.4)",fontFamily:"'DM Sans',sans-serif",transition:"all 0.15s",whiteSpace:"nowrap" }}>{l.label}</button>)}
+            {links.map(l => <button key={l.key} onClick={()=>navigate(l.path)} style={{ background:activeNav===l.key?"rgba(220,38,38,0.12)":"none",border:activeNav===l.key?"1px solid rgba(220,38,38,0.25)":"1px solid transparent",borderRadius:6,cursor:"pointer",padding:"4px 11px",fontSize:11,fontWeight:500,color:activeNav===l.key?"#f87171":"rgba(255,255,255,0.4)",fontFamily:"'DM Sans',sans-serif",transition:"all 0.15s",whiteSpace:"nowrap" }}>{t(l.labelKey)}</button>)}
           </div>
         </div>
+        <LanguageSelector />
         <button onClick={()=>navigate("/sos")} style={{ padding:"6px 16px",borderRadius:7,background:"#dc2626",border:"none",color:"white",fontSize:12,fontWeight:700,cursor:"pointer",letterSpacing:"0.5px",boxShadow:"0 0 16px rgba(220,38,38,0.35)",fontFamily:"'DM Sans',sans-serif",flexShrink:0 }}>SOS</button>
       </div>
       <div style={{ padding:"20px 28px 8px",borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
@@ -56,16 +61,17 @@ const SEVERITY_LEVELS = [
 /* Simulated AI detection result */
 function simulateDetection(fileName) {
   const results = [
-    { label:"Pothole",        confidence:0.94, severity:"critical", description:"Deep pothole detected with high confidence. Estimated diameter 40–60cm. Immediate repair recommended." },
-    { label:"Damaged Road",   confidence:0.87, severity:"high",     description:"Road surface cracking and subsidence detected. Multiple fracture lines visible." },
-    { label:"Waterlogging",   confidence:0.91, severity:"high",     description:"Standing water on road surface detected. Depth estimated >10cm based on visual cues." },
-    { label:"Surface Damage", confidence:0.78, severity:"medium",   description:"General road surface wear detected. No immediate danger but maintenance required." },
+    { labelKey:"reportIssuePage.issueTypes.pothole", confidence:0.94, severity:"critical", descriptionKey:"reportIssuePage.simulated.pothole" },
+    { labelKey:"reportIssuePage.issueTypes.damage", confidence:0.87, severity:"high", descriptionKey:"reportIssuePage.simulated.damage" },
+    { labelKey:"reportIssuePage.issueTypes.water", confidence:0.91, severity:"high", descriptionKey:"reportIssuePage.simulated.water" },
+    { labelKey:"reportIssuePage.issueTypes.damage", confidence:0.78, severity:"medium", descriptionKey:"reportIssuePage.simulated.surface" },
   ];
   return results[Math.floor(Math.random() * results.length)];
 }
 
 export default function ReportIssue() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [preview, setPreview] = useState(null);
   const [detecting, setDetecting] = useState(false);
   const [result, setResult] = useState(null);
@@ -84,8 +90,8 @@ export default function ReportIssue() {
 
     setTimeout(() => {
       const det = simulateDetection(file.name);
-      setResult(det);
-      setIssueType(ISSUE_TYPES.find(t => t.label.toLowerCase().includes(det.label.toLowerCase().split(" ")[0])) || ISSUE_TYPES[0]);
+      setResult({ ...det, label: t(det.labelKey), description: t(det.descriptionKey) });
+      setIssueType(ISSUE_TYPES.find(type => type.key === (det.labelKey.includes("water") ? "water" : det.labelKey.includes("pothole") ? "pothole" : "damage")) || ISSUE_TYPES[0]);
       setSeverity(det.severity);
       setDetecting(false);
     }, 2000);
@@ -102,23 +108,23 @@ export default function ReportIssue() {
     return (
       <>
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');`}</style>
-        <PageShell title="Report Issue" navigate={navigate} activeNav="report-issue">
+        <PageShell title={t("reportIssuePage.title")} navigate={navigate} activeNav="report-issue">
           <div style={{ maxWidth:480, margin:"60px auto", textAlign:"center" }}>
             <div style={{ width:80,height:80,borderRadius:"50%",background:"rgba(34,197,94,0.1)",border:"2px solid rgba(34,197,94,0.35)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 20px",animation:"pop 0.4s cubic-bezier(0.34,1.56,0.64,1)" }}>
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.2" strokeLinecap="round"><path d="M20 6 9 17l-5-5"/></svg>
             </div>
-            <div style={{ fontFamily:"'Bebas Neue',cursive",fontSize:32,letterSpacing:3,color:"#22c55e",marginBottom:8 }}>Report Submitted</div>
+            <div style={{ fontFamily:"'Bebas Neue',cursive",fontSize:32,letterSpacing:3,color:"#22c55e",marginBottom:8 }}>{t("reportIssuePage.submittedTitle")}</div>
             <div style={{ fontSize:13,color:"rgba(255,255,255,0.4)",lineHeight:1.7,marginBottom:28 }}>
-              Your road issue has been logged and will be verified by our team. Thank you for helping make Indian roads safer.
+              {t("reportIssuePage.submittedMessage")}
             </div>
             <div style={{ display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap" }}>
               <button onClick={() => { setSubmitted(false); setPreview(null); setResult(null); setRoad(""); setArea(""); setDesc(""); }}
                 style={{ padding:"10px 22px",borderRadius:8,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"rgba(255,255,255,0.6)",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif" }}>
-                Report Another
+                {t("reportIssuePage.reportAnother")}
               </button>
               <button onClick={() => navigate("/dashboard")}
                 style={{ padding:"10px 22px",borderRadius:8,border:"none",background:"#dc2626",color:"white",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif" }}>
-                View Dashboard
+                {t("reportIssuePage.viewDashboard")}
               </button>
             </div>
             <style>{`@keyframes pop{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}`}</style>
@@ -138,17 +144,17 @@ export default function ReportIssue() {
         textarea.ri-input { resize:vertical; min-height:80px; }
         .ri-label { font-size:10px; font-family:'DM Mono',monospace; letter-spacing:1.2px; color:rgba(255,255,255,0.3); text-transform:uppercase; margin-bottom:6px; display:block; }
       `}</style>
-      <PageShell title="Report Issue" subtitle="Upload a road image for AI-powered issue detection" navigate={navigate} activeNav="report-issue">
+      <PageShell title={t("reportIssuePage.title")} subtitle={t("reportIssuePage.subtitle")} navigate={navigate} activeNav="report-issue">
 
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, maxWidth:960, margin:"0 auto" }}>
 
-          {/* ── Left: Upload + AI result ── */}
+          {/* â”€â”€ Left: Upload + AI result â”€â”€ */}
           <div style={{ display:"flex",flexDirection:"column",gap:16 }}>
             <ImageUploader
               onImageSelected={(file) => handleFile(file)}
               onPreview={setPreview}
-              title="Upload road image"
-              subtitle="Drag and drop your image or browse your device to start AI detection."
+              title={t("reportIssuePage.uploadTitle")}
+              subtitle={t("reportIssuePage.uploadSubtitle")}
             />
             <DetectionResult
               detection={result}
@@ -157,28 +163,28 @@ export default function ReportIssue() {
             />
           </div>
 
-          {/* ── Right: Form ── */}
+          {/* â”€â”€ Right: Form â”€â”€ */}
           <div style={{ display:"flex",flexDirection:"column",gap:14 }}>
 
             {/* Issue type picker */}
             <div>
-              <label className="ri-label">Issue Type</label>
+              <label className="ri-label">{t("reportIssuePage.issueType")}</label>
               <div style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6 }}>
-                {ISSUE_TYPES.map(t => (
-                  <button key={t.key} onClick={() => setIssueType(t)} style={{
+                {ISSUE_TYPES.map(type => (
+                  <button key={type.key} onClick={() => setIssueType(type)} style={{
                     padding:"10px 8px", borderRadius:9,
-                    border:`1px solid ${issueType?.key===t.key ? t.color+"55" : "rgba(255,255,255,0.07)"}`,
-                    background: issueType?.key===t.key ? t.color+"14" : "rgba(255,255,255,0.02)",
+                    border:`1px solid ${issueType?.key===type.key ? type.color+"55" : "rgba(255,255,255,0.07)"}`,
+                    background: issueType?.key===type.key ? type.color+"14" : "rgba(255,255,255,0.02)",
                     cursor:"pointer", transition:"all 0.15s",
                     display:"flex",flexDirection:"column",alignItems:"center",gap:5,
                   }}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                      stroke={issueType?.key===t.key ? t.color : "rgba(255,255,255,0.3)"}
+                      stroke={issueType?.key===type.key ? type.color : "rgba(255,255,255,0.3)"}
                       strokeWidth="1.7" strokeLinecap="round">
-                      <path d={t.icon} />
+                      <path d={type.icon} />
                     </svg>
-                    <span style={{ fontSize:9,fontFamily:"'DM Mono',monospace",color:issueType?.key===t.key?t.color:"rgba(255,255,255,0.3)",letterSpacing:"0.5px",textAlign:"center" }}>
-                      {t.label}
+                    <span style={{ fontSize:9,fontFamily:"'DM Mono',monospace",color:issueType?.key===type.key?type.color:"rgba(255,255,255,0.3)",letterSpacing:"0.5px",textAlign:"center" }}>
+                      {t(`reportIssuePage.issueTypes.${type.key}`)}
                     </span>
                   </button>
                 ))}
@@ -187,7 +193,7 @@ export default function ReportIssue() {
 
             {/* Severity */}
             <div>
-              <label className="ri-label">Severity</label>
+              <label className="ri-label">{t("reportIssuePage.severity")}</label>
               <div style={{ display:"flex",gap:6 }}>
                 {SEVERITY_LEVELS.map(s => (
                   <button key={s.key} onClick={() => setSeverity(s.key)} style={{
@@ -199,7 +205,7 @@ export default function ReportIssue() {
                   }}>
                     <span style={{ width:6,height:6,borderRadius:"50%",background:s.color,boxShadow:severity===s.key?`0 0 6px ${s.color}`:"none" }} />
                     <span style={{ fontSize:9,fontFamily:"'DM Mono',monospace",color:severity===s.key?s.color:"rgba(255,255,255,0.3)",letterSpacing:"0.5px" }}>
-                      {s.label}
+                      {t(`reportIssuePage.severityLevels.${s.key}`)}
                     </span>
                   </button>
                 ))}
@@ -208,22 +214,22 @@ export default function ReportIssue() {
 
             {/* Road */}
             <div>
-              <label className="ri-label">Road / Location *</label>
-              <input className="ri-input" placeholder="e.g. NH-48, KM 14 near Mahipalpur flyover"
+              <label className="ri-label">{t("reportIssuePage.roadLocation")}</label>
+              <input className="ri-input" placeholder={t("reportIssuePage.roadPlaceholder")}
                 value={road} onChange={e => setRoad(e.target.value)} />
             </div>
 
             {/* Area */}
             <div>
-              <label className="ri-label">Area / Locality</label>
-              <input className="ri-input" placeholder="e.g. South Delhi"
+              <label className="ri-label">{t("reportIssuePage.area")}</label>
+              <input className="ri-input" placeholder={t("reportIssuePage.areaPlaceholder")}
                 value={area} onChange={e => setArea(e.target.value)} />
             </div>
 
             {/* Description */}
             <div>
-              <label className="ri-label">Additional Notes</label>
-              <textarea className="ri-input" placeholder="Describe the issue, how long it's been there, danger level..."
+              <label className="ri-label">{t("reportIssuePage.notes")}</label>
+              <textarea className="ri-input" placeholder={t("reportIssuePage.notesPlaceholder")}
                 value={desc} onChange={e => setDesc(e.target.value)} />
             </div>
 
@@ -237,7 +243,7 @@ export default function ReportIssue() {
               boxShadow: road.trim() ? "0 4px 20px rgba(220,38,38,0.35)" : "none",
               transition:"all 0.18s",
             }}>
-              Submit Report
+              {t("reportIssuePage.submit")}
             </button>
           </div>
         </div>

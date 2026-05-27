@@ -1,68 +1,69 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import LanguageSelector from "../components/LanguageSelector";
+import { useTranslation } from "react-i18next";
 
-/* ─────────────────────────────────────────────────────────────
-   Home.jsx — Raksha AI landing page
-   Dark tactical aesthetic · Bebas Neue display · DM Mono data
-   ───────────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   Home.jsx â€” Raksha AI landing page
+   Dark tactical aesthetic Â· Bebas Neue display Â· DM Mono data
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 const NAV_LINKS = [
-  { label: "Dashboard",    path: "/dashboard"    },
-  { label: "SOS",          path: "/sos"           },
-  { label: "Report Issue", path: "/report-issue"  },
-  { label: "Risk Alerts",  path: "/risk-alert"    },
-  { label: "Legal Info",   path: "/legal-info"    },
+  { labelKey: "navigation.dashboard", path: "/dashboard" },
+  { labelKey: "navigation.sos", path: "/sos" },
+  { labelKey: "navigation.reportIssue", path: "/report-issue" },
+  { labelKey: "navigation.riskAlertPlural", path: "/risk-alert" },
+  { labelKey: "navigation.legal", path: "/legal-info" },
 ];
 
 const FEATURE_CARDS = [
   {
     icon: "M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-5 0a4 4 0 1 1-8 0 4 4 0 0 1 8 0z",
     color: "#dc2626",
-    label: "Smart SOS",
-    desc: "One-tap emergency dispatch with live GPS, nearby hospitals, and simulated ambulance ETA.",
+    labelKey: "home.features.sosLabel",
+    descKey: "home.features.sosDesc",
     path: "/sos",
-    tag: "Emergency",
+    tagKey: "home.features.sosTag",
   },
   {
     icon: "M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7",
     color: "#f97316",
-    label: "Road Issues",
-    desc: "AI-powered pothole & damage detection from uploaded images. Confidence-scored classification.",
+    labelKey: "home.features.roadLabel",
+    descKey: "home.features.roadDesc",
     path: "/report-issue",
-    tag: "AI Detection",
+    tagKey: "home.features.roadTag",
   },
   {
     icon: "M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 0-2 2h-2a2 2 0 0 0-2-2z",
     color: "#3b82f6",
-    label: "Dashboard",
-    desc: "Accident hotspot maps, issue heatmaps, safety analytics and real-time zone insights.",
+    labelKey: "home.features.dashboardLabel",
+    descKey: "home.features.dashboardDesc",
     path: "/dashboard",
-    tag: "Analytics",
+    tagKey: "home.features.dashboardTag",
   },
   {
     icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z",
     color: "#eab308",
-    label: "Risk Alerts",
-    desc: "ML-based zone risk prediction from time-of-day, conditions, and historical patterns.",
+    labelKey: "home.features.riskLabel",
+    descKey: "home.features.riskDesc",
     path: "/risk-alert",
-    tag: "Predictive",
+    tagKey: "home.features.riskTag",
   },
   {
     icon: "M3 6h18M3 12h18M3 18h18",
     color: "#8b5cf6",
-    label: "Legal Info",
-    desc: "Traffic laws, fines, and location-aware rule awareness for Indian roads.",
+    labelKey: "home.features.legalLabel",
+    descKey: "home.features.legalDesc",
     path: "/legal-info",
-    tag: "Prototype",
+    tagKey: "home.features.legalTag",
   },
 ];
 
 const LIVE_STATS = [
-  { label: "Active Alerts",   value: 14,    unit: "",     color: "#dc2626" },
-  { label: "Issues Reported", value: 2847,  unit: "",     color: "#f97316" },
-  { label: "Lives Assisted",  value: 10241, unit: "",     color: "#22c55e" },
-  { label: "Zones Monitored", value: 186,   unit: "",     color: "#3b82f6" },
+  { labelKey: "home.stats.activeAlerts", value: 14, unit: "", color: "#dc2626" },
+  { labelKey: "home.stats.issuesReported", value: 2847, unit: "", color: "#f97316" },
+  { labelKey: "home.stats.livesAssisted", value: 10241, unit: "", color: "#22c55e" },
+  { labelKey: "home.stats.zonesMonitored", value: 186, unit: "", color: "#3b82f6" },
 ];
 
 /* Animated SVG shield logo */
@@ -110,6 +111,7 @@ function Counter({ target, duration = 1200 }) {
 
 /* Navbar */
 function Navbar({ navigate }) {
+  const { t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen]  = useState(false);
 
@@ -161,7 +163,7 @@ function Navbar({ navigate }) {
             onMouseEnter={e => e.target.style.color = "#f1f5f9"}
             onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.5)"}
           >
-            {l.label}
+            {t(l.labelKey)}
           </button>
         ))}
         <LanguageSelector />
@@ -183,9 +185,10 @@ function Navbar({ navigate }) {
   );
 }
 
-/* ── Main page ─────────────────────────────────────────────── */
+/* â”€â”€ Main page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export default function Home() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -202,7 +205,7 @@ export default function Home() {
           overflow-x: hidden;
         }
 
-        /* ── Hero ── */
+        /* â”€â”€ Hero â”€â”€ */
         .hero {
           min-height: 100vh;
           display: flex;
@@ -330,7 +333,7 @@ export default function Home() {
           transform: translateY(-1px);
         }
 
-        /* ── Stats strip ── */
+        /* â”€â”€ Stats strip â”€â”€ */
         .stats-strip {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
@@ -366,7 +369,7 @@ export default function Home() {
           text-transform: uppercase;
         }
 
-        /* ── Features ── */
+        /* â”€â”€ Features â”€â”€ */
         .features-section {
           padding: 80px 24px;
           max-width: 1100px;
@@ -464,7 +467,7 @@ export default function Home() {
         }
         .feature-card:hover .feature-arrow { opacity: 1; transform: translateX(3px); }
 
-        /* ── Problem strip ── */
+        /* â”€â”€ Problem strip â”€â”€ */
         .problem-section {
           background: rgba(220,38,38,0.04);
           border-top: 1px solid rgba(220,38,38,0.1);
@@ -511,7 +514,7 @@ export default function Home() {
           padding-top: 4px;
         }
 
-        /* ── Footer ── */
+        /* â”€â”€ Footer â”€â”€ */
         .footer {
           padding: 40px 24px;
           border-top: 1px solid rgba(255,255,255,0.05);
@@ -539,37 +542,35 @@ export default function Home() {
       <div className="home-root">
         <Navbar navigate={navigate} />
 
-        {/* ── Hero ──────────────────────────────────────── */}
+        {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section className="hero">
           <div className="hero-eyebrow">
             <div className="hero-eyebrow-line" />
-            India's Road Safety Intelligence Platform
+            {t("home.eyebrow")}
             <div className="hero-eyebrow-line" />
           </div>
 
           <h1 className="hero-headline">
-            PROTECTING<br />
-            <span>EVERY ROAD.</span><br />
-            EVERY LIFE.
+            {t("home.headlineLine1")}<br />
+            <span>{t("home.headlineLine2")}</span><br />
+            {t("home.headlineLine3")}
           </h1>
 
           <p className="hero-sub">
-            Raksha AI unifies emergency response, AI road-issue detection,
-            and predictive accident analytics into one platform built for
-            Indian roads.
+            {t("home.subtitle")}
           </p>
 
           <div className="hero-actions">
             <button className="btn-primary" onClick={() => navigate("/sos")}>
-              🚨 Activate SOS
+              {t("home.activateSos")}
             </button>
             <button className="btn-secondary" onClick={() => navigate("/dashboard")}>
-              View Dashboard →
+              {t("home.viewDashboard")}
             </button>
           </div>
         </section>
 
-        {/* ── Live stats strip ──────────────────────────── */}
+        {/* â”€â”€ Live stats strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="stats-strip">
           {LIVE_STATS.map((s, i) => (
             <div className="stat-cell" key={s.label}
@@ -578,20 +579,20 @@ export default function Home() {
                 <Counter target={s.value} duration={1000 + i * 200} />
                 {s.unit}
               </div>
-              <div className="stat-label">{s.label}</div>
+              <div className="stat-label">{t(s.labelKey)}</div>
             </div>
           ))}
         </div>
 
-        {/* ── Features ──────────────────────────────────── */}
+        {/* â”€â”€ Features â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section className="features-section">
-          <div className="section-eyebrow">What We Do</div>
-          <div className="section-title">CORE CAPABILITIES</div>
+          <div className="section-eyebrow">{t("home.coreEyebrow")}</div>
+          <div className="section-title">{t("home.coreTitle")}</div>
 
           <div className="features-grid">
             {FEATURE_CARDS.map((f, i) => (
               <div
-                key={f.label}
+                key={f.labelKey}
                 className="feature-card"
                 onClick={() => navigate(f.path)}
                 style={{ animationDelay: `${i * 60}ms` }}
@@ -612,11 +613,11 @@ export default function Home() {
 
                 <div className="feature-tag"
                   style={{ background: f.color + "18", color: f.color, border: `1px solid ${f.color}33` }}>
-                  {f.tag}
+                  {t(f.tagKey)}
                 </div>
 
-                <div className="feature-name">{f.label}</div>
-                <div className="feature-desc">{f.desc}</div>
+                <div className="feature-name">{t(f.labelKey)}</div>
+                <div className="feature-desc">{t(f.descKey)}</div>
 
                 <div className="feature-arrow">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -629,26 +630,24 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Problem section ───────────────────────────── */}
+        {/* â”€â”€ Problem section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section className="problem-section">
           <div className="problem-inner">
             <div>
-              <div className="section-eyebrow">The Problem</div>
+              <div className="section-eyebrow">{t("home.problemEyebrow")}</div>
               <div className="section-title" style={{ marginBottom: 8 }}>
-                INDIA'S ROAD<br />SAFETY CRISIS
+                {t("home.problemTitle")}
               </div>
               <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", lineHeight: 1.7 }}>
-                Every year, lakhs of lives are affected by preventable road accidents.
-                Delayed response, poor infrastructure monitoring, and lack of real-time
-                data are the three pillars of this crisis — Raksha AI addresses all three.
+                {t("home.problemDescription")}
               </p>
             </div>
             <div>
               {[
-                { num: "153K+", text: "Road accident fatalities annually in India — one of the highest globally." },
-                { num: "~50%",  text: "Deaths occur due to delayed emergency response after the accident." },
-                { num: "40%",   text: "Accidents attributed to poor road conditions — potholes, unmarked hazards." },
-                { num: "6 MIN", text: "Average time saved per emergency response with AI-assisted dispatch routing." },
+                { num: "153K+", text: t("home.problemStats.fatalities") },
+                { num: "~50%", text: t("home.problemStats.delayed") },
+                { num: "40%", text: t("home.problemStats.roadConditions") },
+                { num: "6 MIN", text: t("home.problemStats.responseSaved") },
               ].map(s => (
                 <div className="problem-stat" key={s.num}>
                   <div className="problem-num">{s.num}</div>
@@ -659,7 +658,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── CTA ───────────────────────────────────────── */}
+        {/* â”€â”€ CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section style={{ padding: "80px 24px", textAlign: "center" }}>
           <div style={{
             fontFamily: "'Bebas Neue', cursive",
@@ -668,18 +667,18 @@ export default function Home() {
             color: "#f1f5f9",
             marginBottom: 16,
           }}>
-            SAVE A LIFE TODAY
+            {t("home.ctaTitle")}
           </div>
           <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", marginBottom: 36, maxWidth: 400, margin: "0 auto 36px" }}>
-            Report a road hazard, share a hotspot, or activate emergency assistance — every action counts.
+            {t("home.ctaDescription")}
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <button className="btn-primary" onClick={() => navigate("/sos")}>Emergency SOS</button>
-            <button className="btn-secondary" onClick={() => navigate("/report-issue")}>Report an Issue</button>
+            <button className="btn-primary" onClick={() => navigate("/sos")}>{t("home.emergencySos")}</button>
+            <button className="btn-secondary" onClick={() => navigate("/report-issue")}>{t("home.reportAnIssue")}</button>
           </div>
         </section>
 
-        {/* ── Footer ───────────────────────────────────── */}
+        {/* â”€â”€ Footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
           <div className="footer">
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -689,7 +688,7 @@ export default function Home() {
               </span>
             </div>
             <div className="footer-copy">
-              Built for India · Road Safety Ecosystem · 2024
+              {t("home.footer")}
             </div>
             <div style={{ display: "flex", gap: 16 }}>
               {["Dashboard", "SOS", "Report", "Legal"].map(l => (

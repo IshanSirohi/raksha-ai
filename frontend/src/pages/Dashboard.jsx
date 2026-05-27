@@ -1,19 +1,22 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "../components/LanguageSelector";
 
-/* ─────────────────────────────────────────────────────────────
-   Dashboard.jsx — Raksha AI analytics command centre
-   ───────────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   Dashboard.jsx â€” Raksha AI analytics command centre
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
-/* ── Shared layout shell ──────────────────────────────────────── */
+/* â”€â”€ Shared layout shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function PageShell({ title, subtitle, children, navigate, activeNav = "dashboard" }) {
+  const { t } = useTranslation();
   const links = [
-    { key: "home",         label: "Home",        path: "/"             },
-    { key: "dashboard",    label: "Dashboard",   path: "/dashboard"    },
-    { key: "sos",          label: "SOS",         path: "/sos"          },
-    { key: "report-issue", label: "Report Issue",path: "/report-issue" },
-    { key: "risk-alert",   label: "Risk Alerts", path: "/risk-alert"   },
-    { key: "legal-info",   label: "Legal Info",  path: "/legal-info"   },
+    { key: "home", labelKey: "navigation.home", path: "/" },
+    { key: "dashboard", labelKey: "navigation.dashboard", path: "/dashboard" },
+    { key: "sos", labelKey: "navigation.sos", path: "/sos" },
+    { key: "report-issue", labelKey: "navigation.reportIssue", path: "/report-issue" },
+    { key: "risk-alert", labelKey: "navigation.riskAlertPlural", path: "/risk-alert" },
+    { key: "legal-info", labelKey: "navigation.legal", path: "/legal-info" },
   ];
 
   return (
@@ -67,12 +70,13 @@ function PageShell({ title, subtitle, children, navigate, activeNav = "dashboard
                 transition: "all 0.15s",
                 whiteSpace: "nowrap",
               }}>
-                {l.label}
+                {t(l.labelKey)}
               </button>
             ))}
           </div>
         </div>
 
+        <LanguageSelector />
         <button onClick={() => navigate("/sos")} style={{
           padding: "6px 16px", borderRadius: 7,
           background: "#dc2626", border: "none",
@@ -116,7 +120,7 @@ function PageShell({ title, subtitle, children, navigate, activeNav = "dashboard
   );
 }
 
-/* ── Stat card ────────────────────────────────────────────────── */
+/* â”€â”€ Stat card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function StatCard({ label, value, sub, color, icon }) {
   return (
     <div style={{
@@ -164,8 +168,9 @@ function StatCard({ label, value, sub, color, icon }) {
   );
 }
 
-/* ── Hotspot bar (mini inline chart) ─────────────────────────── */
+/* â”€â”€ Hotspot bar (mini inline chart) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function MiniHotspotChart({ zones }) {
+  const { t } = useTranslation();
   const max = Math.max(...zones.map(z => z.count));
   const [hovered, setHovered] = useState(null);
 
@@ -182,17 +187,17 @@ function MiniHotspotChart({ zones }) {
       }}>
         <div>
           <div style={{ fontFamily: "'Bebas Neue',cursive", fontSize: 17, letterSpacing: 2, color: "#f1f5f9" }}>
-            Accident Hotspots
+            {t("dashboardLive.accidentHotspots")}
           </div>
           <div style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", fontFamily: "'DM Mono',monospace", marginTop: 2 }}>
-            Top 5 zones · Last 30 days
+            {t("dashboardLive.topZones")}
           </div>
         </div>
         <span style={{
           fontSize: 9, padding: "3px 8px", borderRadius: 4,
           background: "rgba(220,38,38,0.1)", border: "1px solid rgba(220,38,38,0.2)",
           color: "#f87171", fontFamily: "'DM Mono',monospace", letterSpacing: 1,
-        }}>LIVE</span>
+        }}>{t("dashboardLive.live")}</span>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -228,8 +233,9 @@ function MiniHotspotChart({ zones }) {
   );
 }
 
-/* ── Recent issues list ───────────────────────────────────────── */
+/* â”€â”€ Recent issues list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function RecentIssues({ issues }) {
+  const { t } = useTranslation();
   const SEV_COLOR = { critical: "#dc2626", high: "#f97316", medium: "#eab308", low: "#6b7280" };
   const STATUS_COLOR = {
     pending: "#f97316", verified: "#3b82f6", "in-progress": "#eab308", resolved: "#22c55e"
@@ -248,7 +254,7 @@ function RecentIssues({ issues }) {
         fontFamily: "'Bebas Neue',cursive",
         fontSize: 17, letterSpacing: 2, color: "#f1f5f9",
       }}>
-        Recent Reports
+        {t("dashboardLive.recentReports")}
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {issues.map((issue, i) => (
@@ -270,10 +276,10 @@ function RecentIssues({ issues }) {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.75)",
                 whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                {issue.type} — {issue.road}
+                {t(`dashboardLive.issueTypes.${issue.typeKey}`)} - {issue.road}
               </div>
               <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontFamily: "'DM Mono',monospace", marginTop: 2 }}>
-                {issue.area} · {issue.reportedAt}
+                {issue.area} Â· {issue.reportedAt}
               </div>
             </div>
             <span style={{
@@ -283,7 +289,7 @@ function RecentIssues({ issues }) {
               color: STATUS_COLOR[issue.status],
               fontFamily: "'DM Mono',monospace", letterSpacing: "0.5px",
             }}>
-              {issue.status}
+              {t(`dashboardLive.status.${issue.statusKey}`)}
             </span>
           </div>
         ))}
@@ -292,8 +298,9 @@ function RecentIssues({ issues }) {
   );
 }
 
-/* ── Map placeholder ──────────────────────────────────────────── */
+/* â”€â”€ Map placeholder â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function MapPlaceholder({ navigate }) {
+  const { t } = useTranslation();
   return (
     <div style={{
       background: "#080c14",
@@ -357,10 +364,10 @@ function MapPlaceholder({ navigate }) {
           color: "rgba(255,255,255,0.3)",
           marginBottom: 8,
         }}>
-          Live Map View
+          {t("dashboardLive.liveMapView")}
         </div>
         <div style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'DM Mono',monospace" }}>
-          Connect Google Maps API to enable
+          {t("dashboardLive.connectMaps")}
         </div>
       </div>
 
@@ -374,7 +381,7 @@ function MapPlaceholder({ navigate }) {
   );
 }
 
-/* ── Main Dashboard ───────────────────────────────────────────── */
+/* â”€â”€ Main Dashboard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const ZONES = [
   { name: "NH-48 Ring Road",      count: 142 },
   { name: "Mathura Road Flyover", count: 118 },
@@ -384,15 +391,16 @@ const ZONES = [
 ];
 
 const RECENT_ISSUES = [
-  { id:1, type:"Pothole",        severity:"critical", road:"NH-48, KM 14",     area:"Mahipalpur",    reportedAt:"18 min ago",  status:"verified"     },
-  { id:2, type:"Waterlogging",   severity:"high",     road:"Outer Ring Road",  area:"Nangloi",       reportedAt:"1 hr ago",    status:"in-progress"  },
-  { id:3, type:"Damaged Road",   severity:"high",     road:"Mathura Road",     area:"Badarpur",      reportedAt:"3 hrs ago",   status:"pending"      },
-  { id:4, type:"Broken Divider", severity:"medium",   road:"Rohini Sec-3",     area:"Rohini",        reportedAt:"5 hrs ago",   status:"pending"      },
-  { id:5, type:"Missing Sign",   severity:"medium",   road:"DND Entry",        area:"Noida Link",    reportedAt:"8 hrs ago",   status:"verified"     },
+  { id:1, typeKey:"pothole", severity:"critical", road:"NH-48, KM 14", area:"Mahipalpur", reportedAt:"18 min ago", status:"verified", statusKey:"verified" },
+  { id:2, typeKey:"waterlogging", severity:"high", road:"Outer Ring Road", area:"Nangloi", reportedAt:"1 hr ago", status:"in-progress", statusKey:"inProgress" },
+  { id:3, typeKey:"damagedRoad", severity:"high", road:"Mathura Road", area:"Badarpur", reportedAt:"3 hrs ago", status:"pending", statusKey:"pending" },
+  { id:4, typeKey:"brokenDivider", severity:"medium", road:"Rohini Sec-3", area:"Rohini", reportedAt:"5 hrs ago", status:"pending", statusKey:"pending" },
+  { id:5, typeKey:"missingSign", severity:"medium", road:"DND Entry", area:"Noida Link", reportedAt:"8 hrs ago", status:"verified", statusKey:"verified" },
 ];
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -404,20 +412,20 @@ export default function Dashboard() {
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');`}</style>
       <PageShell
-        title="Dashboard"
-        subtitle={`Live road safety analytics · ${time.toLocaleTimeString("en-IN")}`}
+        title={t("dashboard.title")}
+        subtitle={`${t("dashboardLive.subtitlePrefix")} · ${time.toLocaleTimeString(i18n.language)}`}
         navigate={navigate}
         activeNav="dashboard"
       >
         {/* KPI row */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px,1fr))", gap: 12, marginBottom: 20 }}>
-          <StatCard label="Active Incidents" value="14" sub="↑ 3 since yesterday" color="#dc2626"
+          <StatCard label={t("dashboardLive.activeIncidents")} value="14" sub={`↑ ${t("dashboardLive.sinceYesterday")}`} color="#dc2626"
             icon="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          <StatCard label="Issues Reported" value="2,847" sub="↑ 12 today" color="#f97316"
+          <StatCard label={t("dashboardLive.issuesReported")} value="2,847" sub={`↑ ${t("dashboardLive.today")}`} color="#f97316"
             icon="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7" />
-          <StatCard label="SOS Activations" value="341" sub="This month" color="#22c55e"
+          <StatCard label={t("dashboardLive.sosActivations")} value="341" sub={t("dashboardLive.thisMonth")} color="#22c55e"
             icon="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-5 0a4 4 0 1 1-8 0 4 4 0 0 1 8 0z" />
-          <StatCard label="Resolved Issues" value="89%" sub="Resolution rate" color="#3b82f6"
+          <StatCard label={t("dashboardLive.resolvedIssues")} value="89%" sub={t("dashboardLive.resolutionRate")} color="#3b82f6"
             icon="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 0-2 2h-2a2 2 0 0 0-2-2z" />
         </div>
 

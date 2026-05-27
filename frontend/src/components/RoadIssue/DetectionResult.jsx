@@ -1,4 +1,6 @@
-import { useMemo } from "react";
+ï»¿import { useMemo } from "react";
+
+import { useTranslation } from "react-i18next";
 
 const severityStyles = {
   critical: { badge: "rgba(248,113,113,0.15)", text: "#fca5a5", ring: "#ef4444" },
@@ -21,6 +23,7 @@ export default function DetectionResult({
   loading = false,
   error = null,
 }) {
+  const { t } = useTranslation();
   const confidence = useMemo(() => {
     if (!detection) {
       return 0;
@@ -44,9 +47,9 @@ export default function DetectionResult({
         color: "#f8fafc",
         fontFamily: "'DM Sans', sans-serif",
       }}>
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>Analyzing image</div>
+        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{t("detector.analyzingTitle")}</div>
         <div style={{ fontSize: 12, color: "rgba(248, 250, 252, 0.7)", marginBottom: 16 }}>
-          Our AI pipeline is checking the image for road damage patterns.
+          {t("detector.analyzingDescription")}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div
@@ -59,7 +62,7 @@ export default function DetectionResult({
               animation: "spin 0.9s linear infinite",
             }}
           />
-          <span style={{ fontSize: 12, color: "rgba(248, 250, 252, 0.74)" }}>Running detection…</span>
+          <span style={{ fontSize: 12, color: "rgba(248, 250, 252, 0.74)" }}>{t("detector.running")}</span>
         </div>
       </div>
     );
@@ -75,7 +78,7 @@ export default function DetectionResult({
         color: "#fecaca",
         fontFamily: "'DM Sans', sans-serif",
       }}>
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>Detection failed</div>
+        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{t("detector.failedTitle")}</div>
         <div style={{ fontSize: 12, lineHeight: 1.6 }}>{error}</div>
       </div>
     );
@@ -91,9 +94,9 @@ export default function DetectionResult({
         color: "rgba(248, 250, 252, 0.74)",
         fontFamily: "'DM Sans', sans-serif",
       }}>
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>No detection yet</div>
+        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{t("detector.emptyTitle")}</div>
         <div style={{ fontSize: 12, lineHeight: 1.6 }}>
-          Upload an image to get an AI-based road issue assessment.
+          {t("detector.emptyDescription")}
         </div>
       </div>
     );
@@ -113,9 +116,9 @@ export default function DetectionResult({
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "start", flexWrap: "wrap" }}>
         <div>
           <div style={{ fontSize: 12, color: "rgba(248, 250, 252, 0.58)", textTransform: "uppercase", letterSpacing: 1.2 }}>
-            AI detection result
+            {t("detector.resultTitle")}
           </div>
-          <div style={{ fontSize: 20, fontWeight: 800, marginTop: 6 }}>{detection.label || "Road issue detected"}</div>
+          <div style={{ fontSize: 20, fontWeight: 800, marginTop: 6 }}>{detection.label || t("detector.fallbackLabel")}</div>
         </div>
         <div
           style={{
@@ -128,19 +131,19 @@ export default function DetectionResult({
             textTransform: "capitalize",
           }}
         >
-          {severityKey} severity
+          {t("detector.severityLabel", { severity: t(`dashboardLive.severity.${severityKey}`, severityKey) })}
         </div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 220px", gap: 16, alignItems: "center" }}>
         <div style={{ display: "grid", gap: 12 }}>
           <div style={{ fontSize: 13, lineHeight: 1.7, color: "rgba(248, 250, 252, 0.86)" }}>
-            {detection.description || "The image has been analyzed and classified using the current road safety model."}
+            {detection.description || t("detector.fallbackDescription")}
           </div>
 
           <div style={{ display: "grid", gap: 8 }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "rgba(248, 250, 252, 0.76)" }}>
-              <span>Confidence</span>
+              <span>{t("detector.confidence")}</span>
               <span>{confidence}%</span>
             </div>
             <div style={{ height: 8, borderRadius: 999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
@@ -183,17 +186,17 @@ export default function DetectionResult({
             {confidence}%
           </div>
           <div style={{ fontSize: 12, color: "rgba(248, 250, 252, 0.74)", textAlign: "center" }}>
-            {detection.subtype || detection.type || "Road damage classification"}
+            {detection.subtype || detection.type || t("detector.fallbackType")}
           </div>
         </div>
       </div>
 
       {imagePreview ? (
         <div>
-          <div style={{ fontSize: 12, color: "rgba(248, 250, 252, 0.58)", marginBottom: 8 }}>Uploaded preview</div>
+          <div style={{ fontSize: 12, color: "rgba(248, 250, 252, 0.58)", marginBottom: 8 }}>{t("detector.uploadedPreview")}</div>
           <img
             src={imagePreview}
-            alt="Uploaded road issue"
+            alt={t("detector.uploadedAlt")}
             style={{
               width: "100%",
               maxHeight: 240,
@@ -214,3 +217,4 @@ export default function DetectionResult({
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import i18n from 'i18next';
+﻿import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
@@ -8,6 +8,7 @@ import taTranslation from './locales/ta/translation.json';
 import teTranslation from './locales/te/translation.json';
 import knTranslation from './locales/kn/translation.json';
 import mlTranslation from './locales/ml/translation.json';
+import runtimeOverrides from './runtimeOverrides';
 
 i18n
   .use(LanguageDetector)
@@ -32,4 +33,9 @@ i18n
     },
   });
 
+Object.entries(runtimeOverrides).forEach(([language, resources]) => {
+  i18n.addResourceBundle(language, 'translation', resources, true, true);
+});
+
 export default i18n;
+

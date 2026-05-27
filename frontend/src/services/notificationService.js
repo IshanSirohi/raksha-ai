@@ -1,5 +1,4 @@
-import { useTranslation } from 'i18next';
-import LanguageSelector from '../components/LanguageSelector';
+﻿import { useTranslation } from 'react-i18next';
 
 const NotificationService = () => {
   const { t } = useTranslation();
@@ -23,3 +22,4 @@ const NotificationService = () => {
 };
 
 export default NotificationService;
+

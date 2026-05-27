@@ -1,20 +1,24 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-/* ─────────────────────────────────────────────────────────────
-   SOSPage.jsx — Emergency SOS activation page
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "../components/LanguageSelector";
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   SOSPage.jsx â€” Emergency SOS activation page
    Full-page emergency command interface
-   ───────────────────────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 /* PageShell re-export (shared across pages) */
 function PageShell({ title, subtitle, children, navigate, activeNav }) {
+  const { t } = useTranslation();
   const links = [
-    { key: "home",         label: "Home",        path: "/"             },
-    { key: "dashboard",    label: "Dashboard",   path: "/dashboard"    },
-    { key: "sos",          label: "SOS",         path: "/sos"          },
-    { key: "report-issue", label: "Report Issue",path: "/report-issue" },
-    { key: "risk-alert",   label: "Risk Alerts", path: "/risk-alert"   },
-    { key: "legal-info",   label: "Legal Info",  path: "/legal-info"   },
+    { key: "home", labelKey: "navigation.home", path: "/" },
+    { key: "dashboard", labelKey: "navigation.dashboard", path: "/dashboard" },
+    { key: "sos", labelKey: "navigation.sos", path: "/sos" },
+    { key: "report-issue", labelKey: "navigation.reportIssue", path: "/report-issue" },
+    { key: "risk-alert", labelKey: "navigation.riskAlertPlural", path: "/risk-alert" },
+    { key: "legal-info", labelKey: "navigation.legal", path: "/legal-info" },
   ];
   return (
     <div style={{ minHeight:"100vh", background:"#060810", color:"#e2e8f0", fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column" }}>
@@ -30,10 +34,11 @@ function PageShell({ title, subtitle, children, navigate, activeNav }) {
           </div>
           <div style={{ display:"flex", gap:2, borderLeft:"1px solid rgba(255,255,255,0.06)", paddingLeft:16 }}>
             {links.map(l => (
-              <button key={l.key} onClick={() => navigate(l.path)} style={{ background:activeNav===l.key?"rgba(220,38,38,0.12)":"none", border:activeNav===l.key?"1px solid rgba(220,38,38,0.25)":"1px solid transparent", borderRadius:6, cursor:"pointer", padding:"4px 11px", fontSize:11, fontWeight:500, color:activeNav===l.key?"#f87171":"rgba(255,255,255,0.4)", fontFamily:"'DM Sans',sans-serif", transition:"all 0.15s", whiteSpace:"nowrap" }}>{l.label}</button>
+              <button key={l.key} onClick={() => navigate(l.path)} style={{ background:activeNav===l.key?"rgba(220,38,38,0.12)":"none", border:activeNav===l.key?"1px solid rgba(220,38,38,0.25)":"1px solid transparent", borderRadius:6, cursor:"pointer", padding:"4px 11px", fontSize:11, fontWeight:500, color:activeNav===l.key?"#f87171":"rgba(255,255,255,0.4)", fontFamily:"'DM Sans',sans-serif", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t(l.labelKey)}</button>
             ))}
           </div>
         </div>
+        <LanguageSelector />
         <button onClick={() => navigate("/sos")} style={{ padding:"6px 16px", borderRadius:7, background:"#dc2626", border:"none", color:"white", fontSize:12, fontWeight:700, cursor:"pointer", letterSpacing:"0.5px", boxShadow:"0 0 16px rgba(220,38,38,0.35)", fontFamily:"'DM Sans',sans-serif", flexShrink:0 }}>SOS</button>
       </div>
       <div style={{ padding:"20px 28px 8px", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
@@ -101,9 +106,10 @@ const CONTACTS = [
   { name: "Road Helpline", num: "1033", icon: "M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7", color:"#22c55e" },
 ];
 
-/* ── Main SOSPage ──────────────────────────────────────────────── */
+/* â”€â”€ Main SOSPage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export default function SOSPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [activated, setActivated] = useState(false);
   const [location, setLocation] = useState(null);
   const [stage, setStage] = useState("idle"); // idle | locating | dispatched
@@ -120,20 +126,20 @@ export default function SOSPage() {
   return (
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');`}</style>
-      <PageShell title="Emergency SOS" subtitle="One-tap emergency alert with live location dispatch" navigate={navigate} activeNav="sos">
+      <PageShell title={t("sosPage.title")} subtitle={t("sosPage.subtitle")} navigate={navigate} activeNav="sos">
 
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, maxWidth:900, margin:"0 auto" }}>
 
-          {/* ── Left: SOS button + status ── */}
+          {/* â”€â”€ Left: SOS button + status â”€â”€ */}
           <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:24 }}>
 
             {/* Status bar */}
             <div style={{ width:"100%", padding:"10px 16px", borderRadius:10, border:"1px solid rgba(255,255,255,0.06)", background:"rgba(255,255,255,0.02)", display:"flex", alignItems:"center", gap:8 }}>
               <span style={{ width:7, height:7, borderRadius:"50%", background: stage==="dispatched" ? "#22c55e" : stage==="locating" ? "#eab308" : "#3b82f6", boxShadow:`0 0 6px ${stage==="dispatched"?"#22c55e":stage==="locating"?"#eab308":"#3b82f6"}`, animation:`${stage==="locating"?"blink 0.8s ease infinite":"none"}` }} />
               <span style={{ fontFamily:"'DM Mono',monospace", fontSize:11, color:"rgba(255,255,255,0.5)" }}>
-                {stage==="idle" && "System ready · GPS active"}
-                {stage==="locating" && "Acquiring location…"}
-                {stage==="dispatched" && "Alert dispatched · Services notified"}
+                {stage==="idle" && t("sosPage.ready")}
+                {stage==="locating" && t("sosPage.locating")}
+                {stage==="dispatched" && t("sosPage.dispatched")}
               </span>
               <style>{`@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }`}</style>
             </div>
@@ -146,35 +152,35 @@ export default function SOSPage() {
                 <div style={{ width:80, height:80, borderRadius:"50%", background:"rgba(34,197,94,0.1)", border:"2px solid rgba(34,197,94,0.4)", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 16px", animation:"successPop 0.4s cubic-bezier(0.34,1.56,0.64,1)" }}>
                   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.2" strokeLinecap="round"><path d="M20 6 9 17l-5-5"/></svg>
                 </div>
-                <div style={{ fontFamily:"'Bebas Neue',cursive", fontSize:28, letterSpacing:2, color:"#22c55e", marginBottom:6 }}>Alert Sent</div>
+                <div style={{ fontFamily:"'Bebas Neue',cursive", fontSize:28, letterSpacing:2, color:"#22c55e", marginBottom:6 }}>{t("sosPage.alertSent")}</div>
                 <div style={{ fontSize:12, color:"rgba(255,255,255,0.4)", fontFamily:"'DM Mono',monospace" }}>
-                  Services notified · ETA ~6 min
+                  {t("sosPage.servicesEta")}
                 </div>
-                <button onClick={() => { setActivated(false); setStage("idle"); }} style={{ marginTop:20, padding:"8px 20px", borderRadius:8, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"rgba(255,255,255,0.5)", fontSize:12, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>Reset</button>
+                <button onClick={() => { setActivated(false); setStage("idle"); }} style={{ marginTop:20, padding:"8px 20px", borderRadius:8, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"rgba(255,255,255,0.5)", fontSize:12, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>{t("sosPage.reset")}</button>
                 <style>{`@keyframes successPop { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }`}</style>
               </div>
             )}
 
             <p style={{ fontSize:12, color:"rgba(255,255,255,0.25)", textAlign:"center", maxWidth:240, lineHeight:1.6, fontFamily:"'DM Sans',sans-serif" }}>
-              Tap SOS to send your location to emergency services and emergency contacts instantly.
+              {t("sosPage.helper")}
             </p>
 
             {/* Location chip */}
             {location && (
               <div style={{ display:"flex", alignItems:"center", gap:8, padding:"8px 14px", borderRadius:9, border:"1px solid rgba(255,255,255,0.08)", background:"rgba(255,255,255,0.03)", fontSize:12, color:"rgba(255,255,255,0.5)", fontFamily:"'DM Mono',monospace", width:"100%" }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="1.8" strokeLinecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
-                {location.lat}°N, {location.lng}°E
+                {location.lat}Â°N, {location.lng}Â°E
               </div>
             )}
           </div>
 
-          {/* ── Right: Emergency contacts + info ── */}
+          {/* â”€â”€ Right: Emergency contacts + info â”€â”€ */}
           <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
 
             {/* Emergency numbers */}
             <div style={{ background:"#080c14", border:"1px solid rgba(255,255,255,0.06)", borderRadius:12, overflow:"hidden" }}>
               <div style={{ padding:"14px 18px", borderBottom:"1px solid rgba(255,255,255,0.05)", fontFamily:"'Bebas Neue',cursive", fontSize:16, letterSpacing:2, color:"#f1f5f9" }}>
-                Emergency Numbers
+                {t("sosPage.numbers")}
               </div>
               <div style={{ padding:"12px" }}>
                 {CONTACTS.map(c => (
@@ -202,7 +208,7 @@ export default function SOSPage() {
 
             {/* What happens next */}
             <div style={{ background:"#080c14", border:"1px solid rgba(255,255,255,0.06)", borderRadius:12, padding:"18px" }}>
-              <div style={{ fontFamily:"'Bebas Neue',cursive", fontSize:16, letterSpacing:2, color:"#f1f5f9", marginBottom:14 }}>What Happens Next</div>
+              <div style={{ fontFamily:"'Bebas Neue',cursive", fontSize:16, letterSpacing:2, color:"#f1f5f9", marginBottom:14 }}>{t("sosPage.whatNext")}</div>
               {[
                 { step:"01", text:"Your GPS coordinates are captured and sent to the backend.", color:"#3b82f6" },
                 { step:"02", text:"Nearest hospitals and emergency units are identified.", color:"#f97316" },

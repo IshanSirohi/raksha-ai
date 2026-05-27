@@ -1,4 +1,6 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+﻿import { useCallback, useMemo, useRef, useState } from "react";
+
+import { useTranslation } from "react-i18next";
 
 const defaultStyles = {
   root: {
@@ -73,6 +75,7 @@ export default function ImageUploader({
   disabled = false,
   initialPreview = null,
 }) {
+  const { t } = useTranslation();
   const inputRef = useRef(null);
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState(initialPreview);
@@ -85,13 +88,13 @@ export default function ImageUploader({
     }
 
     if (!file.type.startsWith("image/")) {
-      setError("Please select a valid image file.");
+      setError(t("uploader.invalidImage"));
       return false;
     }
 
     setError("");
     return true;
-  }, []);
+  }, [t]);
 
   const handleFile = useCallback((file) => {
     if (!file || disabled) {
@@ -134,11 +137,11 @@ export default function ImageUploader({
     }
 
     if (fileName) {
-      return `Selected: ${fileName}`;
+      return t("uploader.selected", { fileName });
     }
 
-    return "Supports JPG, PNG, WEBP and other common image formats.";
-  }, [error, fileName]);
+    return t("uploader.supportedFormats");
+  }, [error, fileName, t]);
 
   return (
     <div style={defaultStyles.root}>
@@ -172,12 +175,12 @@ export default function ImageUploader({
         }}
       >
         {preview ? (
-          <img src={preview} alt="Road issue preview" style={defaultStyles.preview} />
+          <img src={preview} alt={t("uploader.previewAlt")} style={defaultStyles.preview} />
         ) : (
           <div style={defaultStyles.center}>
-            <div style={{ fontSize: 28, marginBottom: 10 }}>??</div>
-            <div style={{ fontSize: 13, fontWeight: 700 }}>Drop your image here</div>
-            <div style={defaultStyles.hint}>or click to choose a file from your device</div>
+            <div style={{ fontSize: 28, marginBottom: 10 }}>IMG</div>
+            <div style={{ fontSize: 13, fontWeight: 700 }}>{t("uploader.dropHere")}</div>
+            <div style={defaultStyles.hint}>{t("uploader.chooseHint")}</div>
           </div>
         )}
       </div>
@@ -200,7 +203,7 @@ export default function ImageUploader({
             opacity: disabled ? 0.6 : 1,
           }}
         >
-          Choose image
+          {t("uploader.chooseImage")}
         </button>
       </div>
 
@@ -217,3 +220,4 @@ export default function ImageUploader({
     </div>
   );
 }
+

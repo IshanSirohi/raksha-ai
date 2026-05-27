@@ -1,5 +1,5 @@
-import { createContext, useContext } from 'react';
-import { useTranslation } from 'i18next';
+﻿import { createContext, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const LanguageContext = createContext();
 
@@ -29,3 +29,4 @@ export const useLanguage = () => {
   }
   return context;
 };
+

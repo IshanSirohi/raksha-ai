@@ -1,15 +1,19 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-/* ─────────────────────────────────────────────────────────────
-   RiskAlert.jsx — Accident risk prediction & alert page
-   ───────────────────────────────────────────────────────────── */
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "../components/LanguageSelector";
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   RiskAlert.jsx â€” Accident risk prediction & alert page
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function PageShell({ title, subtitle, children, navigate, activeNav }) {
+  const { t } = useTranslation();
   const links = [
-    { key:"home",label:"Home",path:"/" },{ key:"dashboard",label:"Dashboard",path:"/dashboard" },
-    { key:"sos",label:"SOS",path:"/sos" },{ key:"report-issue",label:"Report Issue",path:"/report-issue" },
-    { key:"risk-alert",label:"Risk Alerts",path:"/risk-alert" },{ key:"legal-info",label:"Legal Info",path:"/legal-info" },
+    { key:"home",labelKey:"navigation.home",path:"/" },{ key:"dashboard",labelKey:"navigation.dashboard",path:"/dashboard" },
+    { key:"sos",labelKey:"navigation.sos",path:"/sos" },{ key:"report-issue",labelKey:"navigation.reportIssue",path:"/report-issue" },
+    { key:"risk-alert",labelKey:"navigation.riskAlertPlural",path:"/risk-alert" },{ key:"legal-info",labelKey:"navigation.legal",path:"/legal-info" },
   ];
   return (
     <div style={{ minHeight:"100vh",background:"#060810",color:"#e2e8f0",fontFamily:"'DM Sans',sans-serif",display:"flex",flexDirection:"column" }}>
@@ -20,9 +24,10 @@ function PageShell({ title, subtitle, children, navigate, activeNav }) {
             <span style={{ fontFamily:"'Bebas Neue',cursive",fontSize:15,letterSpacing:2.5,color:"#f1f5f9" }}>RAKSHA AI</span>
           </div>
           <div style={{ display:"flex",gap:2,borderLeft:"1px solid rgba(255,255,255,0.06)",paddingLeft:16 }}>
-            {links.map(l => <button key={l.key} onClick={()=>navigate(l.path)} style={{ background:activeNav===l.key?"rgba(220,38,38,0.12)":"none",border:activeNav===l.key?"1px solid rgba(220,38,38,0.25)":"1px solid transparent",borderRadius:6,cursor:"pointer",padding:"4px 11px",fontSize:11,fontWeight:500,color:activeNav===l.key?"#f87171":"rgba(255,255,255,0.4)",fontFamily:"'DM Sans',sans-serif",transition:"all 0.15s",whiteSpace:"nowrap" }}>{l.label}</button>)}
+            {links.map(l => <button key={l.key} onClick={()=>navigate(l.path)} style={{ background:activeNav===l.key?"rgba(220,38,38,0.12)":"none",border:activeNav===l.key?"1px solid rgba(220,38,38,0.25)":"1px solid transparent",borderRadius:6,cursor:"pointer",padding:"4px 11px",fontSize:11,fontWeight:500,color:activeNav===l.key?"#f87171":"rgba(255,255,255,0.4)",fontFamily:"'DM Sans',sans-serif",transition:"all 0.15s",whiteSpace:"nowrap" }}>{t(l.labelKey)}</button>)}
           </div>
         </div>
+        <LanguageSelector />
         <button onClick={()=>navigate("/sos")} style={{ padding:"6px 16px",borderRadius:7,background:"#dc2626",border:"none",color:"white",fontSize:12,fontWeight:700,cursor:"pointer",letterSpacing:"0.5px",boxShadow:"0 0 16px rgba(220,38,38,0.35)",fontFamily:"'DM Sans',sans-serif",flexShrink:0 }}>SOS</button>
       </div>
       <div style={{ padding:"20px 28px 8px",borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
@@ -90,7 +95,7 @@ function AlertItem({ alert, i }) {
       <div style={{ width:8,height:8,borderRadius:"50%",background:c,boxShadow:`0 0 6px ${c}`,marginTop:4,flexShrink:0,animation:alert.severity==="critical"?"critBlink 1.2s ease-in-out infinite":"none" }} />
       <div style={{ flex:1,minWidth:0 }}>
         <div style={{ fontSize:12,fontWeight:500,color:"rgba(255,255,255,0.75)",marginBottom:2 }}>{alert.zone}</div>
-        <div style={{ fontSize:11,color:"rgba(255,255,255,0.35)",fontFamily:"'DM Mono',monospace" }}>{alert.reason} · {alert.time}</div>
+        <div style={{ fontSize:11,color:"rgba(255,255,255,0.35)",fontFamily:"'DM Mono',monospace" }}>{alert.reason} Â· {alert.time}</div>
       </div>
       <span style={{ fontSize:9,padding:"2px 7px",borderRadius:4,background:c+"18",border:`1px solid ${c}33`,color:c,fontFamily:"'DM Mono',monospace",letterSpacing:"0.5px",flexShrink:0 }}>
         {alert.severity.toUpperCase()}
@@ -101,7 +106,7 @@ function AlertItem({ alert, i }) {
 
 /* Input conditions form */
 const CONDITIONS = [
-  { key:"time",    label:"Time of Day",   options:["Peak Morning (7–10AM)","Afternoon","Peak Evening (5–9PM)","Late Night","Early Morning"],   icon:"M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 5v5l4 2" },
+  { key:"time",    label:"Time of Day",   options:["Peak Morning (7â€“10AM)","Afternoon","Peak Evening (5â€“9PM)","Late Night","Early Morning"],   icon:"M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 5v5l4 2" },
   { key:"weather", label:"Weather",       options:["Clear","Light Rain","Heavy Rain","Fog","Dense Fog","Extreme Heat"],                          icon:"M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z" },
   { key:"road",    label:"Road Condition",options:["Good","Minor Damage","Potholes","Waterlogged","Construction Zone","Severely Damaged"],       icon:"M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7" },
   { key:"traffic", label:"Traffic Level", options:["Low","Moderate","Heavy","Stop-and-Go","Accident-Induced"],                                    icon:"M12 22V12 M12 12l-4-4 M12 12l4-4 M2 17l4-4 4 4 M14 17l4-4 4 4" },
@@ -127,12 +132,13 @@ const ALERTS = [
 
 export default function RiskAlert() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [cond, setCond] = useState({});
   const [score, setScore] = useState(42);
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzed, setAnalyzed] = useState(false);
 
-  const RISK_LABEL = score >= 75 ? "Critical" : score >= 50 ? "High Risk" : score >= 30 ? "Moderate" : "Low Risk";
+  const RISK_LABEL = score >= 75 ? t("riskPage.labels.critical") : score >= 50 ? t("riskPage.labels.highRisk") : score >= 30 ? t("riskPage.labels.moderate") : t("riskPage.labels.lowRisk");
   const RISK_COLOR = score >= 75 ? "#dc2626" : score >= 50 ? "#f97316" : score >= 30 ? "#eab308" : "#22c55e";
 
   function analyze() {
@@ -155,17 +161,17 @@ export default function RiskAlert() {
         select.ri-sel:focus{border-color:rgba(220,38,38,0.4);}
         .ri-label{font-size:10px;font-family:'DM Mono',monospace;letter-spacing:1.2px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:5px;display:block;}
       `}</style>
-      <PageShell title="Risk Alerts" subtitle="ML-based accident risk prediction for your route" navigate={navigate} activeNav="risk-alert">
+      <PageShell title={t("riskPage.title")} subtitle={t("riskPage.subtitle")} navigate={navigate} activeNav="risk-alert">
 
         <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:20,maxWidth:960,margin:"0 auto" }}>
 
-          {/* ── Left: prediction form ── */}
+          {/* â”€â”€ Left: prediction form â”€â”€ */}
           <div style={{ display:"flex",flexDirection:"column",gap:16 }}>
 
             <div style={{ background:"#080c14",border:"1px solid rgba(255,255,255,0.06)",borderRadius:12,padding:20 }}>
-              <div style={{ fontFamily:"'Bebas Neue',cursive",fontSize:17,letterSpacing:2,color:"#f1f5f9",marginBottom:4 }}>Risk Predictor</div>
+              <div style={{ fontFamily:"'Bebas Neue',cursive",fontSize:17,letterSpacing:2,color:"#f1f5f9",marginBottom:4 }}>{t("riskPage.predictor")}</div>
               <div style={{ fontSize:11,color:"rgba(255,255,255,0.3)",fontFamily:"'DM Mono',monospace",marginBottom:18 }}>
-                Set conditions — model returns zone risk score
+                {t("riskPage.predictorHelp")}
               </div>
 
               <div style={{ display:"flex",flexDirection:"column",gap:12 }}>
@@ -177,7 +183,7 @@ export default function RiskAlert() {
                     </label>
                     <div style={{ position:"relative" }}>
                       <select className="ri-sel" value={cond[c.key]||""} onChange={e => setCond(p=>({...p,[c.key]:e.target.value}))}>
-                        <option value="">Select…</option>
+                        <option value="">{t("riskPage.select")}</option>
                         {c.options.map(o => <option key={o} value={o}>{o}</option>)}
                       </select>
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeLinecap="round" style={{ position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",pointerEvents:"none" }}><polyline points="6 9 12 15 18 9"/></svg>
@@ -197,7 +203,7 @@ export default function RiskAlert() {
                 transition:"all 0.18s",
                 display:"flex",alignItems:"center",justifyContent:"center",gap:8,
               }}>
-                {analyzing ? <><div style={{ width:16,height:16,borderRadius:"50%",border:"2px solid rgba(255,255,255,0.2)",borderTopColor:"white",animation:"spin 0.8s linear infinite" }} />Analyzing…</> : "▶ Run Risk Analysis"}
+                {analyzing ? <><div style={{ width:16,height:16,borderRadius:"50%",border:"2px solid rgba(255,255,255,0.2)",borderTopColor:"white",animation:"spin 0.8s linear infinite" }} />{t("riskPage.analyzing")}</> : t("riskPage.analyze")}
               </button>
             </div>
 
@@ -205,7 +211,7 @@ export default function RiskAlert() {
             {analyzed && (
               <div style={{ background:"#080c14",border:"1px solid rgba(255,255,255,0.06)",borderRadius:12,padding:20,animation:"slideIn 0.3s ease" }}>
                 <div style={{ fontFamily:"'Bebas Neue',cursive",fontSize:15,letterSpacing:2,color:"#f1f5f9",marginBottom:14 }}>
-                  Risk Factors
+                  {t("riskPage.riskFactors")}
                 </div>
                 <div style={{ display:"flex",flexDirection:"column",gap:11 }}>
                   <FactorRow label="Time of Day"    value={cond.time?.includes("Peak")||cond.time?.includes("Night")?8:4}    max={10} color="#f97316" icon="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 5v5l4 2"/>
@@ -218,28 +224,28 @@ export default function RiskAlert() {
             )}
           </div>
 
-          {/* ── Right: gauge + live alerts ── */}
+          {/* â”€â”€ Right: gauge + live alerts â”€â”€ */}
           <div style={{ display:"flex",flexDirection:"column",gap:16 }}>
 
             {/* Risk gauge */}
             <div style={{ background:"#080c14",border:`1px solid ${RISK_COLOR}22`,borderRadius:12,padding:24,textAlign:"center",position:"relative",overflow:"hidden" }}>
               <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:`linear-gradient(90deg,${RISK_COLOR},transparent)` }} />
-              <div style={{ fontFamily:"'DM Mono',monospace",fontSize:9,letterSpacing:2,color:"rgba(255,255,255,0.25)",marginBottom:16,textTransform:"uppercase" }}>Current Zone Risk Score</div>
+              <div style={{ fontFamily:"'DM Mono',monospace",fontSize:9,letterSpacing:2,color:"rgba(255,255,255,0.25)",marginBottom:16,textTransform:"uppercase" }}>{t("riskPage.currentScore")}</div>
               <RiskGauge score={score} label={RISK_LABEL} color={RISK_COLOR} />
               <div style={{ marginTop:12,fontSize:12,color:"rgba(255,255,255,0.3)",fontFamily:"'DM Mono',monospace",lineHeight:1.6 }}>
-                {score >= 75 && "⚠ Avoid this zone if possible. High accident probability detected."}
-                {score >= 50 && score < 75 && "Drive with extreme caution. Multiple risk factors active."}
-                {score >= 30 && score < 50 && "Normal precautions advised. Monitor conditions."}
-                {score < 30 && "Zone appears safe. Standard driving precautions apply."}
+                {score >= 75 && t("riskPage.advice.critical")}
+                {score >= 50 && score < 75 && t("riskPage.advice.high")}
+                {score >= 30 && score < 50 && t("riskPage.advice.medium")}
+                {score < 30 && t("riskPage.advice.low")}
               </div>
             </div>
 
             {/* Live alert feed */}
             <div style={{ background:"#080c14",border:"1px solid rgba(255,255,255,0.06)",borderRadius:12,overflow:"hidden",flex:1 }}>
               <div style={{ padding:"14px 16px",borderBottom:"1px solid rgba(255,255,255,0.05)",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
-                <div style={{ fontFamily:"'Bebas Neue',cursive",fontSize:17,letterSpacing:2,color:"#f1f5f9" }}>Live Alert Feed</div>
+                <div style={{ fontFamily:"'Bebas Neue',cursive",fontSize:17,letterSpacing:2,color:"#f1f5f9" }}>{t("riskPage.feed")}</div>
                 <span style={{ fontSize:9,padding:"3px 8px",borderRadius:4,background:"rgba(220,38,38,0.1)",border:"1px solid rgba(220,38,38,0.2)",color:"#f87171",fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>
-                  ● LIVE
+                  â— LIVE
                 </span>
               </div>
               {ALERTS.map((a, i) => <AlertItem key={i} alert={a} i={i} />)}

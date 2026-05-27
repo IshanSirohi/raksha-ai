@@ -1,16 +1,20 @@
-import { useState, useMemo } from "react";
+﻿import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-/* ─────────────────────────────────────────────────────────────
-   LegalInfo.jsx — Traffic laws & fines awareness module
-   Prototype — Indian Motor Vehicle Act reference
-   ───────────────────────────────────────────────────────────── */
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "../components/LanguageSelector";
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   LegalInfo.jsx â€” Traffic laws & fines awareness module
+   Prototype â€” Indian Motor Vehicle Act reference
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function PageShell({ title, subtitle, children, navigate, activeNav }) {
+  const { t } = useTranslation();
   const links = [
-    { key:"home",label:"Home",path:"/" },{ key:"dashboard",label:"Dashboard",path:"/dashboard" },
-    { key:"sos",label:"SOS",path:"/sos" },{ key:"report-issue",label:"Report Issue",path:"/report-issue" },
-    { key:"risk-alert",label:"Risk Alerts",path:"/risk-alert" },{ key:"legal-info",label:"Legal Info",path:"/legal-info" },
+    { key:"home",labelKey:"navigation.home",path:"/" },{ key:"dashboard",labelKey:"navigation.dashboard",path:"/dashboard" },
+    { key:"sos",labelKey:"navigation.sos",path:"/sos" },{ key:"report-issue",labelKey:"navigation.reportIssue",path:"/report-issue" },
+    { key:"risk-alert",labelKey:"navigation.riskAlertPlural",path:"/risk-alert" },{ key:"legal-info",labelKey:"navigation.legal",path:"/legal-info" },
   ];
   return (
     <div style={{ minHeight:"100vh",background:"#060810",color:"#e2e8f0",fontFamily:"'DM Sans',sans-serif",display:"flex",flexDirection:"column" }}>
@@ -21,9 +25,10 @@ function PageShell({ title, subtitle, children, navigate, activeNav }) {
             <span style={{ fontFamily:"'Bebas Neue',cursive",fontSize:15,letterSpacing:2.5,color:"#f1f5f9" }}>RAKSHA AI</span>
           </div>
           <div style={{ display:"flex",gap:2,borderLeft:"1px solid rgba(255,255,255,0.06)",paddingLeft:16 }}>
-            {links.map(l => <button key={l.key} onClick={()=>navigate(l.path)} style={{ background:activeNav===l.key?"rgba(220,38,38,0.12)":"none",border:activeNav===l.key?"1px solid rgba(220,38,38,0.25)":"1px solid transparent",borderRadius:6,cursor:"pointer",padding:"4px 11px",fontSize:11,fontWeight:500,color:activeNav===l.key?"#f87171":"rgba(255,255,255,0.4)",fontFamily:"'DM Sans',sans-serif",transition:"all 0.15s",whiteSpace:"nowrap" }}>{l.label}</button>)}
+            {links.map(l => <button key={l.key} onClick={()=>navigate(l.path)} style={{ background:activeNav===l.key?"rgba(220,38,38,0.12)":"none",border:activeNav===l.key?"1px solid rgba(220,38,38,0.25)":"1px solid transparent",borderRadius:6,cursor:"pointer",padding:"4px 11px",fontSize:11,fontWeight:500,color:activeNav===l.key?"#f87171":"rgba(255,255,255,0.4)",fontFamily:"'DM Sans',sans-serif",transition:"all 0.15s",whiteSpace:"nowrap" }}>{t(l.labelKey)}</button>)}
           </div>
         </div>
+        <LanguageSelector />
         <button onClick={()=>navigate("/sos")} style={{ padding:"6px 16px",borderRadius:7,background:"#dc2626",border:"none",color:"white",fontSize:12,fontWeight:700,cursor:"pointer",letterSpacing:"0.5px",boxShadow:"0 0 16px rgba(220,38,38,0.35)",fontFamily:"'DM Sans',sans-serif",flexShrink:0 }}>SOS</button>
       </div>
       <div style={{ padding:"20px 28px 8px",borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
@@ -36,13 +41,13 @@ function PageShell({ title, subtitle, children, navigate, activeNav }) {
   );
 }
 
-/* ── Law data (Motor Vehicles Act 2019 amended fines) ───────── */
+/* â”€â”€ Law data (Motor Vehicles Act 2019 amended fines) â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const LAWS = [
   {
     id:"L1", section:"Section 183", category:"Speed",
     title:"Over-speeding",
     desc:"Driving above prescribed speed limits on highways, urban roads, or school zones.",
-    first: "₹1,000–2,000", repeat: "₹2,000+", imprisonment: null,
+    first: "â‚¹1,000â€“2,000", repeat: "â‚¹2,000+", imprisonment: null,
     tags:["highway","urban","school zone"],
     severity:"high",
   },
@@ -50,7 +55,7 @@ const LAWS = [
     id:"L2", section:"Section 184", category:"Driving",
     title:"Dangerous Driving",
     desc:"Driving in a manner that endangers life or property of others. Includes racing and rash driving.",
-    first: "₹1,000–5,000", repeat: "₹10,000", imprisonment: "6 months–1 year",
+    first: "â‚¹1,000â€“5,000", repeat: "â‚¹10,000", imprisonment: "6 monthsâ€“1 year",
     tags:["racing","rash driving"],
     severity:"critical",
   },
@@ -58,7 +63,7 @@ const LAWS = [
     id:"L3", section:"Section 185", category:"Impairment",
     title:"Drunken Driving (DUI)",
     desc:"Driving with blood alcohol content exceeding 30mg/100ml of blood.",
-    first: "₹10,000", repeat: "₹15,000", imprisonment: "6 months–2 years",
+    first: "â‚¹10,000", repeat: "â‚¹15,000", imprisonment: "6 monthsâ€“2 years",
     tags:["alcohol","BAC","impairment"],
     severity:"critical",
   },
@@ -66,7 +71,7 @@ const LAWS = [
     id:"L4", section:"Section 194B", category:"Safety",
     title:"Seatbelt Violation",
     desc:"Driver or front-seat passenger not wearing seatbelt while vehicle is in motion.",
-    first: "₹1,000", repeat: "₹1,000", imprisonment: null,
+    first: "â‚¹1,000", repeat: "â‚¹1,000", imprisonment: null,
     tags:["seatbelt","safety"],
     severity:"medium",
   },
@@ -74,7 +79,7 @@ const LAWS = [
     id:"L5", section:"Section 194C", category:"Safety",
     title:"Helmet Not Worn",
     desc:"Two-wheeler rider or pillion not wearing an ISI-certified helmet.",
-    first: "₹1,000 + 3-month licence suspension", repeat: "₹2,000", imprisonment: null,
+    first: "â‚¹1,000 + 3-month licence suspension", repeat: "â‚¹2,000", imprisonment: null,
     tags:["helmet","two-wheeler","motorcycle"],
     severity:"medium",
   },
@@ -82,7 +87,7 @@ const LAWS = [
     id:"L6", section:"Section 177A", category:"Signals",
     title:"Jumping Red Light",
     desc:"Proceeding past a red traffic signal without stopping at the designated stop line.",
-    first: "₹5,000", repeat: "₹10,000", imprisonment: null,
+    first: "â‚¹5,000", repeat: "â‚¹10,000", imprisonment: null,
     tags:["traffic light","signal","red light"],
     severity:"high",
   },
@@ -90,7 +95,7 @@ const LAWS = [
     id:"L7", section:"Section 194D", category:"Mobile",
     title:"Mobile Phone Use While Driving",
     desc:"Using a handheld mobile phone for talking, texting, or any purpose while driving.",
-    first: "₹5,000", repeat: "₹10,000", imprisonment: null,
+    first: "â‚¹5,000", repeat: "â‚¹10,000", imprisonment: null,
     tags:["mobile","phone","distraction"],
     severity:"high",
   },
@@ -98,7 +103,7 @@ const LAWS = [
     id:"L8", section:"Section 119", category:"Lane",
     title:"Wrong-side Driving",
     desc:"Driving on the incorrect side of the road or against traffic flow on a one-way street.",
-    first: "₹1,000", repeat: "₹2,000", imprisonment: null,
+    first: "â‚¹1,000", repeat: "â‚¹2,000", imprisonment: null,
     tags:["one-way","wrong-side","lane"],
     severity:"high",
   },
@@ -106,7 +111,7 @@ const LAWS = [
     id:"L9", section:"Section 194A", category:"Overloading",
     title:"Vehicle Overloading",
     desc:"Carrying passengers or cargo beyond the registered capacity of the vehicle.",
-    first: "₹20,000 + ₹2,000 per extra tonne", repeat: "Double fine", imprisonment: null,
+    first: "â‚¹20,000 + â‚¹2,000 per extra tonne", repeat: "Double fine", imprisonment: null,
     tags:["cargo","passengers","capacity"],
     severity:"medium",
   },
@@ -114,7 +119,7 @@ const LAWS = [
     id:"L10", section:"Section 196", category:"Insurance",
     title:"Driving Without Insurance",
     desc:"Operating a motor vehicle on a public road without valid third-party insurance.",
-    first: "₹2,000 or 3 months imprisonment", repeat: "₹4,000 or 3 months", imprisonment: "3 months",
+    first: "â‚¹2,000 or 3 months imprisonment", repeat: "â‚¹4,000 or 3 months", imprisonment: "3 months",
     tags:["insurance","uninsured"],
     severity:"high",
   },
@@ -122,7 +127,7 @@ const LAWS = [
     id:"L11", section:"Section 130", category:"Documents",
     title:"Driving Without Licence",
     desc:"Operating a motor vehicle without a valid driving licence or a learner's licence.",
-    first: "₹5,000", repeat: "₹10,000", imprisonment: "3 months",
+    first: "â‚¹5,000", repeat: "â‚¹10,000", imprisonment: "3 months",
     tags:["licence","DL","documents"],
     severity:"critical",
   },
@@ -130,7 +135,7 @@ const LAWS = [
     id:"L12", section:"Section 112", category:"Speed",
     title:"Unauthorised Racing / Trials",
     desc:"Participating in any speed contest or trial on a public road without prior written government permission.",
-    first: "₹5,000", repeat: "₹10,000", imprisonment: "3 months",
+    first: "â‚¹5,000", repeat: "â‚¹10,000", imprisonment: "3 months",
     tags:["racing","speed","competition"],
     severity:"critical",
   },
@@ -214,6 +219,7 @@ function LawCard({ law, expanded, onToggle }) {
 
 export default function LegalInfo() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [search, setSearch]   = useState("");
   const [cat, setCat]         = useState("All");
   const [expanded, setExpanded] = useState(null);
@@ -241,30 +247,30 @@ export default function LegalInfo() {
         .li-search::placeholder{color:rgba(255,255,255,0.2);}
       `}</style>
 
-      <PageShell title="Legal Info" subtitle="Traffic laws & fines under Indian Motor Vehicles Act 2019" navigate={navigate} activeNav="legal-info">
+      <PageShell title={t("legalPage.title")} subtitle={t("legalPage.subtitle")} navigate={navigate} activeNav="legal-info">
 
         {/* Prototype notice */}
         <div style={{ marginBottom:20,padding:"10px 16px",borderRadius:9,border:"1px solid rgba(234,179,8,0.25)",background:"rgba(234,179,8,0.06)",display:"flex",alignItems:"flex-start",gap:10 }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="1.8" strokeLinecap="round" style={{ marginTop:2,flexShrink:0 }}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <div style={{ fontSize:11,color:"rgba(234,179,8,0.8)",lineHeight:1.6,fontFamily:"'DM Mono',monospace" }}>
-            <strong>Prototype Module</strong> — This is a static reference. Location-based rule personalisation is planned for a future release. Always verify with official MORTH sources.
+            <strong>{t("legalPage.prototypeTitle")}</strong> - {t("legalPage.prototype")}
           </div>
         </div>
 
         <div style={{ display:"grid",gridTemplateColumns:"260px 1fr",gap:20,maxWidth:1060,margin:"0 auto" }}>
 
-          {/* ── Left sidebar: filters + quick stats ── */}
+          {/* â”€â”€ Left sidebar: filters + quick stats â”€â”€ */}
           <div style={{ display:"flex",flexDirection:"column",gap:14 }}>
 
             {/* Search */}
             <div style={{ position:"relative" }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeLinecap="round" style={{ position:"absolute",left:11,top:"50%",transform:"translateY(-50%)",pointerEvents:"none" }}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-              <input className="li-search" placeholder="Search laws, sections, tags…" value={search} onChange={e => setSearch(e.target.value)} />
+              <input className="li-search" placeholder={t("legalPage.searchPlaceholder")} value={search} onChange={e => setSearch(e.target.value)} />
             </div>
 
             {/* Category filter */}
             <div style={{ background:"#080c14",border:"1px solid rgba(255,255,255,0.06)",borderRadius:12,padding:"14px",display:"flex",flexDirection:"column",gap:4 }}>
-              <div style={{ fontFamily:"'DM Mono',monospace",fontSize:9,letterSpacing:2,color:"rgba(255,255,255,0.25)",marginBottom:8,textTransform:"uppercase" }}>Category</div>
+              <div style={{ fontFamily:"'DM Mono',monospace",fontSize:9,letterSpacing:2,color:"rgba(255,255,255,0.25)",marginBottom:8,textTransform:"uppercase" }}>{t("legalPage.category")}</div>
               {CATEGORIES.map(c => (
                 <button key={c} onClick={() => setCat(c)} style={{
                   padding:"7px 12px",borderRadius:7,border:"none",
@@ -284,10 +290,10 @@ export default function LegalInfo() {
 
             {/* Quick facts */}
             <div style={{ background:"#080c14",border:"1px solid rgba(255,255,255,0.06)",borderRadius:12,padding:16 }}>
-              <div style={{ fontFamily:"'DM Mono',monospace",fontSize:9,letterSpacing:2,color:"rgba(255,255,255,0.25)",marginBottom:12,textTransform:"uppercase" }}>Quick Facts</div>
+              <div style={{ fontFamily:"'DM Mono',monospace",fontSize:9,letterSpacing:2,color:"rgba(255,255,255,0.25)",marginBottom:12,textTransform:"uppercase" }}>{t("legalPage.quickFacts")}</div>
               {[
-                { label:"Max single fine",  value:"₹20,000", color:"#dc2626" },
-                { label:"Drunk driving max", value:"₹15,000+", color:"#f97316" },
+                { label:"Max single fine",  value:"â‚¹20,000", color:"#dc2626" },
+                { label:"Drunk driving max", value:"â‚¹15,000+", color:"#f97316" },
                 { label:"Offences listed",   value:`${LAWS.length} laws`,   color:"#3b82f6" },
                 { label:"Act version",       value:"MV Act 2019", color:"#22c55e" },
               ].map(f => (
@@ -300,22 +306,22 @@ export default function LegalInfo() {
 
             {/* Future scope callout */}
             <div style={{ padding:14,borderRadius:12,border:"1px solid rgba(59,130,246,0.2)",background:"rgba(59,130,246,0.06)" }}>
-              <div style={{ fontSize:11,fontWeight:600,color:"#60a5fa",marginBottom:4,fontFamily:"'DM Sans',sans-serif" }}>Future Scope</div>
+              <div style={{ fontSize:11,fontWeight:600,color:"#60a5fa",marginBottom:4,fontFamily:"'DM Sans',sans-serif" }}>{t("legalPage.futureScope")}</div>
               <div style={{ fontSize:11,color:"rgba(255,255,255,0.35)",lineHeight:1.6 }}>
-                Location-based rule personalisation — show state-specific speed limits, city-level restrictions, and time-sensitive rules based on GPS.
+                {t("legalPage.futureScopeText")}
               </div>
             </div>
           </div>
 
-          {/* ── Right: law cards ── */}
+          {/* â”€â”€ Right: law cards â”€â”€ */}
           <div>
             <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14 }}>
               <div style={{ fontFamily:"'DM Mono',monospace",fontSize:11,color:"rgba(255,255,255,0.3)" }}>
-                Showing <strong style={{ color:"rgba(255,255,255,0.6)" }}>{filtered.length}</strong> of {LAWS.length} rules
+                {t("legalPage.showing")} <strong style={{ color:"rgba(255,255,255,0.6)" }}>{filtered.length}</strong> {t("legalPage.ofRules", { count: LAWS.length })}
               </div>
               {search && (
                 <button onClick={() => setSearch("")} style={{ fontSize:11,color:"rgba(255,255,255,0.3)",background:"none",border:"none",cursor:"pointer",fontFamily:"'DM Mono',monospace",textDecoration:"underline" }}>
-                  Clear search
+                  {t("legalPage.clearSearch")}
                 </button>
               )}
             </div>
@@ -323,7 +329,7 @@ export default function LegalInfo() {
             <div style={{ display:"flex",flexDirection:"column",gap:8 }}>
               {filtered.length === 0 ? (
                 <div style={{ textAlign:"center",padding:"48px 0",color:"rgba(255,255,255,0.2)",fontFamily:"'DM Mono',monospace",fontSize:13 }}>
-                  No laws match your search
+                  {t("legalPage.noMatch")}
                 </div>
               ) : (
                 filtered.map(law => (
